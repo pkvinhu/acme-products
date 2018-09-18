@@ -14,6 +14,7 @@ router.get('/top-rating', async (req, res, next) => {
   const products = await Product.findAll()
   const ratings = products.map(product => {return product.rating})
   const topRating = Math.max(...ratings)
+  console.log(topRating)
   Product.findOne({
   	where: {
   	  rating: topRating
@@ -24,7 +25,8 @@ router.get('/top-rating', async (req, res, next) => {
 })
 
 //CREATE PRODUCT
-router.post('/', (req, res, next) => {
+router.post('/create', async (req, res, next) => {
+  console.log(req.body.name)
   Product.create({
   	name: req.body.name,
   	rating: Math.round(Math.random()*20)
@@ -35,7 +37,11 @@ router.post('/', (req, res, next) => {
 
 //DELETE PRODUCT
 router.delete('/:id', (req, res, next) => {
-  Product.findById(req.params.id)
+  Product.destroy({
+  	where: {
+  		id: req.params.id
+  	}
+  })
   .then(() => res.sendStatus(204).end())
   .catch(next)
 })

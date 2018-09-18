@@ -2,13 +2,13 @@ import React from 'react'
 import ReactDOM, {render} from 'react-dom'
 import { HashRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import ProductList from './components/ProductList'
+import Main from './components/Main'
 import store from './store'
 
 render(
-  <Provider>
+  <Provider store={store}>
     <Router>
-      <ProductList />
+      <Main />
     </Router>
   </Provider>,
   document.getElementById('main')
