@@ -8,7 +8,8 @@ import axios from 'axios'
 const initialState = {
   products: [],
   top: {},
-  newProduct: ''
+  newProduct: '',
+  allRatings: true
 }
 
 
@@ -18,6 +19,7 @@ const GET_TOP_RATED ='GET_TOP_RATED'
 const WRITE_PRODUCT = 'WRITE_PRODUCT'
 const CREATE_PRODUCT = 'CREATE_PRODUCT'
 const DELETE_PRODUCT = 'DELETE_PRODUCT'
+const CHANGE_RATING = 'CHANGE_RATING'
 
 //ACTION CREATORS
 export const getProducts = (products) => ({
@@ -43,6 +45,10 @@ export const createAProduct = (product) => ({
 export const deleteProduct = (product) => ({
   type: DELETE_PRODUCT,
   product
+})
+
+export const changeRating = () => ({
+  type: CHANGE_RATING
 })
 
 
@@ -82,6 +88,37 @@ export const deleteAProduct = (product) => {
   }
 }
 
+export const filterByLowRatings = () => {
+	return async (dispatch) => {
+	const response = await axios.get('/api/products/low-rating')
+	const newProducts = response.data
+	console.log('NEW PRODUCT', newProducts)
+    const action = getProducts(newProducts)
+	dispatch(action)
+	dispatch(changeRating())
+	}
+}
+
+export const filterByMidRatings = () => {
+	return async (dispatch) => {
+	const response = await axios.get('/api/products/mid-rating')
+	const newProducts = response.data
+    const action = getProducts(newProducts)
+	dispatch(action)
+	dispatch(changeRating())
+	}
+}
+
+export const filterByHighRatings = () => {
+	return async (dispatch) => {
+	const response = await axios.get('/api/products/high-rating')
+	const newProducts = response.data
+    const action = getProducts(newProducts)
+	dispatch(action)
+	dispatch(changeRating())
+	}
+}
+
 
 //REDUCER
 const reducer = (state = initialState, action) => {
@@ -90,7 +127,8 @@ const reducer = (state = initialState, action) => {
   	case GET_PRODUCTS:
   	  return {
   	  	...state,
-  	  	products: action.products
+  	  	products: action.products,
+  	  	allRatings: !state.allRatings
   	  }
 
   	case GET_TOP_RATED:
@@ -116,6 +154,12 @@ const reducer = (state = initialState, action) => {
   	  return {
   	  	...state,
   	  	products: newProducts
+  	  }
+
+  	case CHANGE_RATING:
+  	  return {
+  	  	...state,
+  	  	allRatings: true
   	  }
 
   	default:
